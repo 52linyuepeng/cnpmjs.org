@@ -3,6 +3,7 @@
 var semver = require('semver');
 var models = require('../models');
 var common = require('./common');
+var config = require('../config');
 var Tag = models.Tag;
 var User = models.User;
 var Module = models.Module;
@@ -561,7 +562,9 @@ exports.authMaintainer = function* (packageName, username) {
   }
 
   var isMaintainer = false;
-  if (latestMod && !latestMod.package._publish_on_cnpm) {
+  if (latestMod && !latestMod.package._publish_on_cnpm && config.scopes.every(function (scope) {
+    return !packageName.includes(scope)
+  })) {
     // no one can update public package maintainers
     // public package only sync from source npm registry
     isMaintainer = false;

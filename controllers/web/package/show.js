@@ -170,7 +170,9 @@ module.exports = function* show(next) {
     }
   }
 
-  if (pkg._publish_on_cnpm) {
+  if ( pkg._publish_on_cnpm || config.scopes.some(function (scope) {
+    return pkg.name.includes(scope)
+  })) {
     pkg.isPrivate = true;
   } else {
     pkg.isPrivate = false;
